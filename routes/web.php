@@ -26,9 +26,14 @@ Route::group(['middleware' => 'auth'], function(){
     CRUD::resource('product', 'ProductCrudController');
     CRUD::resource('unit', 'UnitCrudController');
     CRUD::resource('product-type', 'ProductTypeCrudController');
+    CRUD::resource('supplier', 'SupplierCrudController');
+    CRUD::resource('customer', 'CustomerCrudController');
 });
 
 //todo:validation js
 //todo:ajax js
 //todo:breacrumb
 //todo: fix active menu
+//todo:nfs
+//todo:route base role
+//todo:add more filter

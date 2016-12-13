@@ -28,7 +28,7 @@ class ProductRequest extends \Backpack\CRUD\app\Http\Requests\CrudRequest
             'name' => 'required|min:3|max:255',
             'type_id' => 'required|integer',
             'unit_id' => 'required|integer',
-            'quantity' => 'required|integer',
+            'quantity' => 'required|integer|between:'.$this->input('min_quantity').','.$this->input('max_quantity'),
             'min_quantity' => 'required|integer',
             'max_quantity' => 'required|integer',
             'min_purchase_price' => 'required|numeric',
@@ -56,7 +56,7 @@ class ProductRequest extends \Backpack\CRUD\app\Http\Requests\CrudRequest
     public function messages()
     {
         return [
-            //
+            'quantity.between' => 'Quantity must be between min and max quantity'
         ];
     }
 }

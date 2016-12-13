@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
-
 class UnitRequest extends \Backpack\CRUD\app\Http\Requests\CrudRequest
 {
     /**

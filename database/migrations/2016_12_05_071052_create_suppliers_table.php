@@ -29,6 +29,7 @@ class CreateSuppliersTable extends Migration
             $table->integer('supplier_id')->unsigned();
             $table->integer('product_id')->unsigned();
             $table->double('price', 15, 8);
+            $table->timestamps();
             $table->softDeletes();
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

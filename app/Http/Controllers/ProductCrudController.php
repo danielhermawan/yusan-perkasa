@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 // VALIDATION: change the requests to match your own file names if you need form validation
+use App\Http\Controllers\Base\CrudController;
 use App\Http\Requests\ProductRequest as StoreRequest;
 use App\Http\Requests\ProductRequest as UpdateRequest;
 
-class ProductCrudController extends CrudController {
+class ProductCrudController extends CrudController  {
 
 	public function setUp() {
 
@@ -21,7 +21,7 @@ class ProductCrudController extends CrudController {
         $this->crud->setRoute("product");
         $this->crud->setEntityNameStrings('product', 'products');
 
-        $this->crud->setColumns(['name','qty']);
+        $this->crud->setColumns(['name','quantity']);
         $this->crud->addColumns([
             [
                 'label' => 'Tipe',
@@ -48,7 +48,15 @@ class ProductCrudController extends CrudController {
             [
                 'name' => 'min_sales_price',
                 'label' => 'Min Harga Jual'
-            ]
+            ]/*,
+            [
+                'label' => "Supplier", // Table column heading
+                'type' => "select_multiple",
+                'name' => 'suppliers', // the method that defines the relationship in your Model
+                'entity' => 'suppliers', // the method that defines the relationship in your Model
+                'attribute' => "name", // foreign key attribute that is shown to user
+                'model' => "App\Models\Supplier", // foreign key model
+            ]*/
         ]);
         $this->crud->addFields([
             [
@@ -61,7 +69,7 @@ class ProductCrudController extends CrudController {
                 'name' => 'type_id',
                 'entity' => 'type',
                 'attribute' => 'name',
-                'model' => "App\Models\Type"
+                'model' => "App\Models\ProductType"
             ],
             [
                 'label' => "Unit",
@@ -95,7 +103,16 @@ class ProductCrudController extends CrudController {
                 'name' => 'min_sales_price',
                 'label' => 'Min Harga Jual',
                 'type' => 'number'
-            ]
+            ]/*,
+            [
+                'label' => "Supplier",
+                'type' => 'select2_multiple',
+                'name' => 'suppliers', // the method that defines the relationship in your Model
+                'entity' => 'suppliers', // the method that defines the relationship in your Model
+                'attribute' => 'name', // foreign key attribute that is shown to user
+                'model' => "App\Models\Supplier", // foreign key model
+                'pivot' => true, // on create&update, do you need to add/delete pivot table entries?
+            ]*/
         ]);
     }
 

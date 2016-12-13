@@ -30,6 +30,7 @@ class CreateCustomersTable extends Migration
             $table->integer('product_id')->unsigned();
             $table->double('price', 15, 8);
             $table->softDeletes();
+            $table->timestamps();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->primary(['customer_id', 'product_id']);
