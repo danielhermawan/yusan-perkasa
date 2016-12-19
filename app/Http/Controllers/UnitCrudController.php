@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Backpack\CRUD\app\Http\Controllers\CrudController;
-
+use App\Http\Controllers\Base\CrudController;
 use App\Http\Requests\UnitRequest as StoreRequest;
 use App\Http\Requests\UnitRequest as UpdateRequest;
 

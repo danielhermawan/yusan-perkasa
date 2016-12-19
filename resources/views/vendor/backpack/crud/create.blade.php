@@ -6,6 +6,11 @@
 	    {{ trans('backpack::crud.add') }} <span class="text-lowercase">{{ $crud->entity_name }}</span>
 	  </h1>
 	  <ol class="breadcrumb">
+		  @if($crud->crumb->count())
+			  @foreach($crud->crumb as $c)
+				  <li><a href="{{ url($c['link']) }}" class="text-capitalize">{{ $c['name'] }}</a></li>
+			  @endforeach
+		  @endif
 		  <li><a href="{{ url($crud->route) }}" class="text-capitalize">{{ $crud->entity_name_plural }}</a></li>
 		  <li class="active">{{ trans('backpack::crud.add') }}</li>
 	  </ol>
@@ -29,9 +34,9 @@
 		    <div class="box-body row">
 		      <!-- load the view from the application if it exists, otherwise load the one in the package -->
 		      @if(view()->exists('vendor.backpack.crud.form_content'))
-		      	@include('vendor.backpack.crud.form_content', ['fields' => $crud->getFields('create')])
+		      	@include('vendor.backpack.crud.form_content', ['fields' => $fields])
 		      @else
-		      	@include('crud::form_content', ['fields' => $crud->getFields('create')])
+		      	@include('crud::form_content', ['fields' => $fields])
 		      @endif
 		    </div><!-- /.box-body -->
 		    <div class="box-footer">

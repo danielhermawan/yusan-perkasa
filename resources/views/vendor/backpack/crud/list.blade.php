@@ -1,14 +1,21 @@
 @extends('backpack::layout')
 
+
 @section('header')
     <section class="content-header">
         <h1>
             <span class="text-capitalize">{{ $crud->entity_name_plural }}</span>
             <small>{{ trans('backpack::crud.all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span> {{ trans('backpack::crud.in_the_database') }}.</small>
         </h1>
+
         <ol class="breadcrumb">
+            @if($crud->crumb->count())
+                @foreach($crud->crumb as $c)
+                    <li><a href="{{ url($c['link']) }}" class="text-capitalize">{{ $c['name'] }}</a></li>
+                @endforeach
+            @endif
             <li><a href="{{ url($crud->route) }}" class="text-capitalize">{{ $crud->entity_name_plural }}</a></li>
-            <li class="active">{{ trans('backpack::crud.list') }}</li>
+            <li class="active">List</li>
         </ol>
     </section>
 @endsection
@@ -40,8 +47,8 @@
                             @if ($crud->details_row)
                                 <th></th> <!-- expand/minimize button column -->
                             @endif
-
                             {{-- Table columns --}}
+
                             @foreach ($crud->columns as $column)
                                 <th>{{ $column['label'] }}</th>
                             @endforeach
@@ -60,7 +67,6 @@
                                     @if ($crud->details_row)
                                         @include('crud::columns.details_row_button')
                                     @endif
-
                                     {{-- load the view from the application if it exists, otherwise load the one in the package --}}
                                     @foreach ($crud->columns as $column)
                                         @if (!isset($column['type']))

@@ -23,7 +23,7 @@
 		  {!! Form::open(array('url' => $crud->route.'/'.$entry->getKey(), 'method' => 'put', 'files'=>$crud->hasUploadFields('update', $entry->getKey()))) !!}
 		  <div class="box">
 		    <div class="box-header with-border">
-		      <h3 class="box-title">{{ trans('backpack::crud.edit') }}</h3>
+		      <h3 class="box-title">{{ trans('backpack::crud.edit').' '.$title }}</h3>
 		    </div>
 		    <div class="box-body row">
 		      <!-- load the view from the application if it exists, otherwise load the one in the package -->

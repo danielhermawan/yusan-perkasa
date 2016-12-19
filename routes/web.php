@@ -20,6 +20,13 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/', 'EmployeeCrudController@index');
     Route::get('/logout', 'AuthController@logout');
 
+    Route::get('/supplier/{supplier}/product', 'SupplierCrudController@listDetail');
+    Route::get('/supplier/{supplier}/product/create', 'SupplierCrudController@createDetail');
+    Route::post('/supplier/{supplier}/product', 'SupplierCrudController@storeDetail');
+    Route::get('/supplier/{supplier}/product/{product}/edit', 'SupplierCrudController@editDetail');
+    Route::put('/supplier/{supplier}/product/{id}', 'SupplierCrudController@updateDetail');
+    Route::delete('/supplier/{supplier}/product/{id}', 'SupplierCrudController@destroyDetail');
+
     CRUD::resource('role', 'RoleCrudController');
     CRUD::resource('role', 'RoleCrudController');
     CRUD::resource('employee', 'EmployeeCrudController');
@@ -31,9 +38,14 @@ Route::group(['middleware' => 'auth'], function(){
 });
 
 //todo:validation js
-//todo:ajax js
-//todo:breacrumb
+//todo:ajax js email
 //todo: fix active menu
 //todo:nfs
 //todo:route base role
 //todo:add more filter
+//todo:create detail exclude already has
+//todo:format rupiah
+//todo:validation detail
+//todo:change view for detail so making detail variable
+//todo:crudweb route with detail
+//todo:ubah beberapa opsi di detail function yang mengambil dari nama rute dingati ambil dari option

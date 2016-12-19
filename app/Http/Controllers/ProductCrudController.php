@@ -48,15 +48,7 @@ class ProductCrudController extends CrudController  {
             [
                 'name' => 'min_sales_price',
                 'label' => 'Min Harga Jual'
-            ]/*,
-            [
-                'label' => "Supplier", // Table column heading
-                'type' => "select_multiple",
-                'name' => 'suppliers', // the method that defines the relationship in your Model
-                'entity' => 'suppliers', // the method that defines the relationship in your Model
-                'attribute' => "name", // foreign key attribute that is shown to user
-                'model' => "App\Models\Supplier", // foreign key model
-            ]*/
+            ]
         ]);
         $this->crud->addFields([
             [
@@ -103,16 +95,7 @@ class ProductCrudController extends CrudController  {
                 'name' => 'min_sales_price',
                 'label' => 'Min Harga Jual',
                 'type' => 'number'
-            ]/*,
-            [
-                'label' => "Supplier",
-                'type' => 'select2_multiple',
-                'name' => 'suppliers', // the method that defines the relationship in your Model
-                'entity' => 'suppliers', // the method that defines the relationship in your Model
-                'attribute' => 'name', // foreign key attribute that is shown to user
-                'model' => "App\Models\Supplier", // foreign key model
-                'pivot' => true, // on create&update, do you need to add/delete pivot table entries?
-            ]*/
+            ]
         ]);
     }
 

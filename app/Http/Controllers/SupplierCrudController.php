@@ -10,7 +10,13 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Controllers\Base\CrudController;
+use App\Http\Requests\SupplierCreateDetailRequest;
 use App\Http\Requests\SupplierRequest;
+use App\Http\Requests\SupplierUpdateDetailRequest;
+use App\Models\Product;
+use App\Models\Supplier;
+use Backpack\CRUD\app\Http\Requests\CrudRequest;
+use DB;
 
 class SupplierCrudController extends CrudController
 {
@@ -40,6 +46,15 @@ class SupplierCrudController extends CrudController
             [
                 'name' => 'zip_code',
                 'label' => 'Kode Pos'
+            ],
+            [
+                'name' => 'list_barang',
+                'label' => 'List Barang',
+                'type' => 'link',
+                'icon' => 'shopping-cart',
+                'link' => 'supplier',
+                'link_end' => 'product',
+                'link_label' => 'Barang'
             ]
         ]);
         $this->crud->addFields([
@@ -66,7 +81,66 @@ class SupplierCrudController extends CrudController
                 'label' => 'Kode Pos'
             ]
         ]);
+
+        $this->crud->parentTitleKey = "name";
+        $this->crud->setDetailColumns('product', [
+            [
+                'name' => 'name',
+                'label' => 'Nama'
+            ],
+            [
+                'name' => 'min_purchase_price',
+                'label' => 'Min Harga Beli'
+            ],
+            [
+                'name' => 'min_sales_price',
+                'label' => 'Min Harga Jual'
+            ],
+            [
+                'name' => 'price',
+                'label' => 'Harga Supplier',
+                'type' => 'pivot'
+            ],
+            [
+                'name' => 'updated_at',
+                'label' => 'Update Harga Terakhir',
+                'type' => 'pivot'
+            ]
+        ]);
+        $this->crud->setDetailCreateFields('product', [
+            [
+                'label' => "Barang",
+                'type' => 'select2_multiple',
+                'name' => 'products', // the method that defines the relationship in your Model
+                'entity' => 'products', // the method that defines the relationship in your Model
+                'attribute' => 'name', // foreign key attribute that is shown to user
+                'model' => "App\Models\Product", // foreign key model
+                'pivot' => true, // on create&update, do you need to add/delete pivot table entries?
+            ],
+            [   // Number
+                'name' => 'price',
+                'label' => 'Harga',
+                'type' => 'number',
+                'prefix' => "Rp",
+            ],
+        ]);
+        $this->crud->setDetailUpdateFields('product', [
+            [
+                'name' => 'price',
+                'label' => 'Harga',
+                'type' => 'number',
+                'prefix' => "Rp",
+                'from' => 'pivot'
+            ]
+        ]);
+        $this->crud->setDetailOptions('product', [
+            'relation' => 'products',
+            'detail_key' => 'product_id',
+            'detail_key_title' => 'name'
+        ]);
+
     }
+
 
     public function store(SupplierRequest $request)
     {
@@ -76,5 +150,15 @@ class SupplierCrudController extends CrudController
     public function update(SupplierRequest $request)
     {
         return parent::updateCrud();
+    }
+
+    public function storeDetail(SupplierCreateDetailRequest $request, $id)
+    {
+        return parent::storeDetailCrud(null, $id);
+    }
+
+    public function updateDetail(SupplierUpdateDetailRequest $request, $parent_id, $detail_id)
+    {
+        return parent::updateDetailCrud(null, $parent_id, $detail_id);
     }
 }
