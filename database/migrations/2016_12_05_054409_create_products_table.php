@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateProductsTable extends Migration
 {
@@ -31,8 +31,8 @@ class CreateProductsTable extends Migration
             $table->integer('quantity');
             $table->integer('min_quantity');
             $table->integer('max_quantity');
-            $table->integer('min_purchase_prize');
-            $table->integer('min_sales_prize');
+            $table->integer('max_purchase_price');
+            $table->integer('min_sales_price');
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('type_id')->references('id')->on('product_types');

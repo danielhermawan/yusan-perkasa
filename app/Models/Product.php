@@ -11,7 +11,7 @@ class Product extends Model
     use SoftDeletes;
     use CrudTrait;
 
-    protected $fillable = ['type_id', 'unit_id', 'name', 'quantity', 'min_quantity', 'max_quantity', 'min_purchase_price',
+    protected $fillable = ['type_id', 'unit_id', 'name', 'quantity', 'min_quantity', 'max_quantity', 'max_purchase_price',
                             'min_sales_price'];
 
     public function type()
@@ -36,11 +36,15 @@ class Product extends Model
 
     public function suppliers()
     {
-        return $this->belongsToMany('App\Models\Supplier');
+        return $this->belongsToMany('App\Models\Supplier')
+            ->withPivot('price')
+            ->withTimestamps();
     }
 
     public function customers()
     {
-        return $this->belongsToMany('App\Models\Customer');
+        return $this->belongsToMany('App\Models\Customer')
+            ->withPivot('price')
+            ->withTimestamps();
     }
 }

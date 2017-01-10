@@ -35,7 +35,7 @@ class SupplierRequest extends FormRequest
             'name' => 'required|max:255',
             'phone' => 'required|numeric|min:7',
             'address' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique',
             'zip_code' => 'required|numeric'
         ];
     }

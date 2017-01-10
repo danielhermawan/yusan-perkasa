@@ -12,7 +12,7 @@ namespace App\Libs;
 class CrudPanel extends \Backpack\CRUD\CrudPanel 
 {
     public $crumb;
-    public $parentTitleKey;
+    public $parentTitleKey = 'name';
     public $detailTitleKey;
     private $detailColumn;
     private $detailCreateField;

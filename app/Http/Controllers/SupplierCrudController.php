@@ -8,20 +8,21 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Base\CrudController;
 use App\Http\Requests\SupplierCreateDetailRequest;
 use App\Http\Requests\SupplierRequest;
 use App\Http\Requests\SupplierUpdateDetailRequest;
+use App\Http\Requests\SupplierUpdateRequest;
 use App\Models\Product;
-use App\Models\Supplier;
-use Backpack\CRUD\app\Http\Requests\CrudRequest;
-use DB;
 
 class SupplierCrudController extends CrudController
 {
     public function setup()
     {
+        $productsOptions = [];
+        foreach (Product::all() as $p){
+            $productsOptions[$p->id] = $p->name;
+        }
         $this->crud->setModel("App\Models\Supplier");
         $this->crud->setRoute("supplier");
         $this->crud->setEntityNameStrings('supplier', 'suppliers');
@@ -82,15 +83,14 @@ class SupplierCrudController extends CrudController
             ]
         ]);
 
-        $this->crud->parentTitleKey = "name";
         $this->crud->setDetailColumns('product', [
             [
                 'name' => 'name',
                 'label' => 'Nama'
             ],
             [
-                'name' => 'min_purchase_price',
-                'label' => 'Min Harga Beli'
+                'name' => 'max_purchase_price',
+                'label' => 'Max Harga Beli'
             ],
             [
                 'name' => 'min_sales_price',
@@ -110,12 +110,14 @@ class SupplierCrudController extends CrudController
         $this->crud->setDetailCreateFields('product', [
             [
                 'label' => "Barang",
-                'type' => 'select2_multiple',
-                'name' => 'products', // the method that defines the relationship in your Model
-                'entity' => 'products', // the method that defines the relationship in your Model
+                'type' => 'select_from_array',
+                'name' => 'product', // the method that defines the relationship in your Model
+                'options' => $productsOptions,
+                'allows_null' => false,
+                /*'entity' => 'products', // the method that defines the relationship in your Model
                 'attribute' => 'name', // foreign key attribute that is shown to user
                 'model' => "App\Models\Product", // foreign key model
-                'pivot' => true, // on create&update, do you need to add/delete pivot table entries?
+                'pivot' => true, // on create&update, do you need to add/delete pivot table entries?*/
             ],
             [   // Number
                 'name' => 'price',
@@ -134,7 +136,9 @@ class SupplierCrudController extends CrudController
             ]
         ]);
         $this->crud->setDetailOptions('product', [
+            'parentTitleKey' => 'name',
             'relation' => 'products',
+            'detail_field' => 'product',
             'detail_key' => 'product_id',
             'detail_key_title' => 'name'
         ]);
@@ -147,7 +151,7 @@ class SupplierCrudController extends CrudController
         return parent::storeCrud();
     }
 
-    public function update(SupplierRequest $request)
+    public function update(SupplierUpdateRequest $request)
     {
         return parent::updateCrud();
     }

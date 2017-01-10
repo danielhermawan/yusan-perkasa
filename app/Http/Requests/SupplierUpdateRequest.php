@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Validator;
 
-class CustomerRequest extends FormRequest
+class SupplierUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +27,7 @@ class CustomerRequest extends FormRequest
             'name' => 'required|max:255',
             'phone' => 'required|numeric|min:7',
             'address' => 'required',
-            'email' => 'required|email|unique:customers,email',
+            'email' => 'required|email|unique:customers,email,'.$this->input('id'),
             'zip_code' => 'required|numeric'
         ];
     }

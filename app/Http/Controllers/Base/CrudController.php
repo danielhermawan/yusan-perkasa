@@ -9,9 +9,9 @@
 namespace App\Http\Controllers\Base;
 
 use App\Libs\CrudPanel;
+use Backpack\CRUD\app\Http\Requests\CrudRequest;
 use Backpack\CRUD\app\Http\Requests\CrudRequest as StoreRequest;
 use Backpack\CRUD\app\Http\Requests\CrudRequest as UpdateRequest;
-use Backpack\CRUD\app\Http\Requests\CrudRequest;
 use Illuminate\Support\Facades\Request;
 
 class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
@@ -131,8 +131,8 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
 
         $this->crud->addCrumb(['name' => $this->crud->entity_name_plural, 'link' => $this->crud->getRoute()]);
         $this->crud->setRoute($this->crud->getRoute()."/".$model->getKey().'/'. $detailKey);
-        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$model->{$this->crud->parentTitleKey},
-            $detailKey.' '.$parentKey.' '.$model->{$this->crud->parentTitleKey});
+        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']},
+            $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']});
 
         $this->crud->setColumns($this->crud->getDetailColumns($detailKey));
 
@@ -156,13 +156,14 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
 
         $parentKey = $this->getParentName();
         $detailKey = $this->getDetailName();
+        $options = $this->crud->getDetailOptions($detailKey);
 
         $model = $this->crud->getEntry($id);
 
         $this->crud->addCrumb(['name' => $this->crud->entity_name_plural, 'link' => $this->crud->getRoute()]);
         $this->crud->setRoute($this->crud->getRoute()."/".$model->getKey().'/'. $detailKey);
-        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$model->{$this->crud->parentTitleKey},
-            $detailKey.' '.$parentKey.' '.$model->{$this->crud->parentTitleKey});
+        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']},
+            $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']});
 
         $this->data['crud'] = $this->crud;
         $this->data['fields'] = $this->crud->getDetailCreateFields($detailKey);
@@ -184,8 +185,8 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
 
         $this->crud->addCrumb(['name' => $this->crud->entity_name_plural, 'link' => $this->crud->getRoute()]);
         $this->crud->setRoute($this->crud->getRoute()."/".$model->getKey().'/'. $detailKey);
-        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$model->{$this->crud->parentTitleKey},
-            $detailKey.' '.$parentKey.' '.$model->{$this->crud->parentTitleKey});
+        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']},
+            $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']});
 
         // fallback to global request instance
         if (is_null($request)) {
@@ -221,9 +222,9 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
         }
 
         if(!$hasSelect2){
-            //todo: Jika gak ada select 2
+            $this->addException([$options['detail_field']]);
+            $model->$relation()->syncWithoutDetaching([$request->{$options['detail_field']} => $request->except($this->exeption)]);
         }
-
 
         \Alert::success(trans('backpack::crud.insert_success'))->flash();
 
@@ -251,13 +252,13 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
 
         $this->crud->addCrumb(['name' => $this->crud->entity_name_plural, 'link' => $this->crud->getRoute()]);
         $this->crud->setRoute($this->crud->getRoute()."/".$parentModel->getKey().'/'. $detailKey);
-        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$parentModel->{$this->crud->parentTitleKey},
-            $detailKey.' '.$parentKey.' '.$parentModel->{$this->crud->parentTitleKey});
+        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$parentModel->{$options['parentTitleKey']},
+            $detailKey.' '.$parentKey.' '.$parentModel->{$options['parentTitleKey']});
 
         $this->data['entry'] = $detailModel;
         $this->data['crud'] = $this->crud;
 
-        $this->data['title'] = $detailKey.' '.$parentKey.' '.$parentModel->{$this->crud->parentTitleKey};
+        $this->data['title'] = $detailKey.' '.$parentKey.' '.$parentModel->{$options['parentTitleKey']};
         $this->data['id'] = $detailModel->id;
 
         $fields = [];
@@ -290,8 +291,8 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
 
         $this->crud->addCrumb(['name' => $this->crud->entity_name_plural, 'link' => $this->crud->getRoute()]);
         $this->crud->setRoute($this->crud->getRoute()."/".$parentModel->getKey().'/'. $detailKey);
-        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$parentModel->{$this->crud->parentTitleKey},
-            $detailKey.' '.$parentKey.' '.$parentModel->{$this->crud->parentTitleKey});
+        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$parentModel->{$options['parentTitleKey']},
+            $detailKey.' '.$parentKey.' '.$parentModel->{$options['parentTitleKey']});
 
         // fallback to global request instance
         if (is_null($request)) {

@@ -84,6 +84,8 @@ return [
     'uploaded'             => 'The :attribute failed to upload.',
     'url'                  => 'The :attribute format is invalid.',
 
+    'check_price' => 'The :attribute must be price',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

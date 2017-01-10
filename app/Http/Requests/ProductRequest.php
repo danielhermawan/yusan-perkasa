@@ -31,7 +31,7 @@ class ProductRequest extends \Backpack\CRUD\app\Http\Requests\CrudRequest
             'quantity' => 'required|integer|between:'.$this->input('min_quantity').','.$this->input('max_quantity'),
             'min_quantity' => 'required|integer',
             'max_quantity' => 'required|integer',
-            'min_purchase_price' => 'required|numeric',
+            'max_purchase_price' => 'required|numeric',
             'min_sales_price' => 'required|numeric',
         ];
     }

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 
-class SupplierUpdateDetailRequest extends FormRequest
+class CustomerCreateDetailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,15 +25,16 @@ class SupplierUpdateDetailRequest extends FormRequest
     public function rules()
     {
         return [
-            'price' => 'required|numeric|check_price:\App\Models\Product,'.$this->segment(4).',max_purchase_price,max'
+            'product' => 'required',
+            'price' => 'required|numeric|check_price:\App\Models\Product,'.$this->product.',min_sales_price,min'
         ];
     }
 
     public function messages()
     {
-        $p = Product::find($this->segment(4));
+        $p = Product::find($this->product);
         return [
-            'price.check_price' => 'Harga barang '.$p->name.' harus sesuai dengan maximal harga belinya yaitu '.$p->max_purchase_price
+            'price.check_price' => 'Harga barang '.$p->name.' harus sesuai dengan minimal harga jualnya yaitu '.$p->min_sales_price
         ];
     }
 }
