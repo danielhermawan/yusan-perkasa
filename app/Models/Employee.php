@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Backpack\CRUD\CrudTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class Employee extends Authenticatable
 {
@@ -28,5 +28,15 @@ class Employee extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
+    }
+
+    public function purchaseDemands()
+    {
+        return $this->hasMany('App\Models\PurchaseDemand');
+    }
+
+    public function purchaseOrders()
+    {
+        return $this->hasMany('App\Models\PurchaseOrder');
     }
 }

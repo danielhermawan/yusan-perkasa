@@ -13,16 +13,12 @@ use App\Http\Requests\SupplierCreateDetailRequest;
 use App\Http\Requests\SupplierRequest;
 use App\Http\Requests\SupplierUpdateDetailRequest;
 use App\Http\Requests\SupplierUpdateRequest;
-use App\Models\Product;
+use App\Models\Supplier;
 
 class SupplierCrudController extends CrudController
 {
     public function setup()
     {
-        $productsOptions = [];
-        foreach (Product::all() as $p){
-            $productsOptions[$p->id] = $p->name;
-        }
         $this->crud->setModel("App\Models\Supplier");
         $this->crud->setRoute("supplier");
         $this->crud->setEntityNameStrings('supplier', 'suppliers');
@@ -109,15 +105,13 @@ class SupplierCrudController extends CrudController
         ]);
         $this->crud->setDetailCreateFields('product', [
             [
-                'label' => "Barang",
-                'type' => 'select_from_array',
+                'label' => "Product",
+                'type' => 'select_from_database',
                 'name' => 'product', // the method that defines the relationship in your Model
-                'options' => $productsOptions,
+                'model' => 'App\Models\Product',
                 'allows_null' => false,
-                /*'entity' => 'products', // the method that defines the relationship in your Model
-                'attribute' => 'name', // foreign key attribute that is shown to user
-                'model' => "App\Models\Product", // foreign key model
-                'pivot' => true, // on create&update, do you need to add/delete pivot table entries?*/
+                'value' => 'id',
+                'display' => 'name'
             ],
             [   // Number
                 'name' => 'price',
@@ -136,6 +130,8 @@ class SupplierCrudController extends CrudController
             ]
         ]);
         $this->crud->setDetailOptions('product', [
+            'label' => 'product',
+            'parent_label' => 'supplier',
             'parentTitleKey' => 'name',
             'relation' => 'products',
             'detail_field' => 'product',
@@ -145,6 +141,10 @@ class SupplierCrudController extends CrudController
 
     }
 
+    public function getSuppliers()
+    {
+        return Supplier::all();
+    }
 
     public function store(SupplierRequest $request)
     {

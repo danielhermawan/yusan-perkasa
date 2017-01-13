@@ -11,7 +11,7 @@ use App\Http\Requests\ProductRequest as StoreRequest;
 use App\Http\Requests\ProductRequest as UpdateRequest;
 use App\Http\Requests\ProductUpdateDetailCustomerRequest;
 use App\Http\Requests\ProductUpdateDetailRequest;
-use App\Models\Customer;
+use App\Models\Product;
 use App\Models\Supplier;
 
 class ProductCrudController extends CrudController  {
@@ -150,17 +150,15 @@ class ProductCrudController extends CrudController  {
             ]
         ]);
 
-        $supplierOptions = [];
-        foreach (Supplier::all() as $p){
-            $supplierOptions[$p->id] = $p->name;
-        }
         $this->crud->setDetailCreateFields('supplier', [
             [
                 'label' => "Supplier",
-                'type' => 'select_from_array',
+                'type' => 'select_from_database',
                 'name' => 'supplier', // the method that defines the relationship in your Model
-                'options' => $supplierOptions,
+                'model' => 'App\Models\Supplier',
                 'allows_null' => false,
+                'value' => 'id',
+                'display' => 'name'
             ],
             [   // Number
                 'name' => 'price',
@@ -170,17 +168,15 @@ class ProductCrudController extends CrudController  {
             ],
         ]);
 
-        $customerOptions = [];
-        foreach (Customer::all() as $p){
-            $customerOptions[$p->id] = $p->name;
-        }
         $this->crud->setDetailCreateFields('customer', [
             [
                 'label' => "Customer",
-                'type' => 'select_from_array',
+                'type' => 'select_from_database',
                 'name' => 'customer', // the method that defines the relationship in your Model
-                'options' => $customerOptions,
+                'model' => 'App\Models\Customer',
                 'allows_null' => false,
+                'value' => 'id',
+                'display' => 'name'
             ],
             [   // Number
                 'name' => 'price',
@@ -210,6 +206,9 @@ class ProductCrudController extends CrudController  {
         ]);
 
         $this->crud->setDetailOptions('supplier', [
+            'label' => 'supplier',
+            'parent_label' => 'product',
+            'model' => 'App\Models\Supplier',
             'parentTitleKey' => 'name',
             'relation' => 'suppliers',
             'detail_field' => 'supplier',
@@ -217,12 +216,24 @@ class ProductCrudController extends CrudController  {
             'detail_key_title' => 'name'
         ]);
         $this->crud->setDetailOptions('customer', [
+            'label' => 'customer',
+            'parent_label' => 'product',
             'parentTitleKey' => 'name',
             'relation' => 'customers',
             'detail_field' => 'customer',
             'detail_key' => 'customer_id',
             'detail_key_title' => 'name'
         ]);
+    }
+
+    public function getProducts()
+    {
+        return Product::all();
+    }
+
+    public function getSupplierProducts(Supplier $supplier)
+    {
+        return $supplier->products()->get();
     }
 
 	public function store(StoreRequest $request)

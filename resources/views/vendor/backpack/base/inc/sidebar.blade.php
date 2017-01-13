@@ -48,6 +48,16 @@
                     <li><a href="{{ url('/customer') }}"><i class="fa fa-circle-o"></i> <span>Customer</span></a></li>
                 </ul>
             </li>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-credit-card"></i> <span>Pembelian</span>
+                    <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ url('/permintaan-pembelian') }}"><i class="fa fa-circle-o"></i> <span>Permintaan Pembelian</span></a></li>
+                    <li><a href="{{ url('/purchase-order') }}"><i class="fa fa-circle-o"></i> <span>Purchase Order</span></a></li>
+                </ul>
+            </li>
         </ul>
       </section>
       <!-- /.sidebar -->

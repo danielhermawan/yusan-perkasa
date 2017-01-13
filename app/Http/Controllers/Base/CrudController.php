@@ -123,18 +123,18 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
     {
         $this->crud->hasAccessOrFail('list');
 
-        $parentKey = $this->getParentName();
-        $detailKey = $this->getDetailName();
-        $options = $this->crud->getDetailOptions($detailKey);
+        $options = $this->crud->getDetailOptions($this->getDetailName());
+        $detailLabel = $options['label'];
+        $parentLabel = $options['parent_label'];
 
         $model = $this->crud->getEntry($id);
 
         $this->crud->addCrumb(['name' => $this->crud->entity_name_plural, 'link' => $this->crud->getRoute()]);
-        $this->crud->setRoute($this->crud->getRoute()."/".$model->getKey().'/'. $detailKey);
-        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']},
-            $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']});
+        $this->crud->setRoute($this->crud->getRoute()."/".$model->getKey().'/'. $detailLabel);
+        $this->crud->setEntityNameStrings( $detailLabel.' '.$parentLabel.' '.$model->{$options['parentTitleKey']},
+            $detailLabel.' '.$parentLabel.' '.$model->{$options['parentTitleKey']});
 
-        $this->crud->setColumns($this->crud->getDetailColumns($detailKey));
+        $this->crud->setColumns($this->crud->getDetailColumns($detailLabel));
 
         $this->data['crud'] = $this->crud;
         $this->data['title'] = ucfirst($this->crud->entity_name_plural);
@@ -154,19 +154,19 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
     {
         $this->crud->hasAccessOrFail('create');
 
-        $parentKey = $this->getParentName();
-        $detailKey = $this->getDetailName();
-        $options = $this->crud->getDetailOptions($detailKey);
+        $options = $this->crud->getDetailOptions($this->getDetailName());
+        $detailLabel = $options['label'];
+        $parentLabel = $options['parent_label'];
 
         $model = $this->crud->getEntry($id);
 
         $this->crud->addCrumb(['name' => $this->crud->entity_name_plural, 'link' => $this->crud->getRoute()]);
-        $this->crud->setRoute($this->crud->getRoute()."/".$model->getKey().'/'. $detailKey);
-        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']},
-            $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']});
+        $this->crud->setRoute($this->crud->getRoute()."/".$model->getKey().'/'. $detailLabel);
+        $this->crud->setEntityNameStrings( $detailLabel.' '.$parentLabel.' '.$model->{$options['parentTitleKey']},
+            $detailLabel.' '.$parentLabel.' '.$model->{$options['parentTitleKey']});
 
         $this->data['crud'] = $this->crud;
-        $this->data['fields'] = $this->crud->getDetailCreateFields($detailKey);
+        $this->data['fields'] = $this->crud->getDetailCreateFields($this->getDetailName());
         $this->data['title'] = trans('backpack::crud.add').' '.$this->crud->entity_name;
 
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
@@ -177,16 +177,16 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
     {
         $this->crud->hasAccessOrFail('create');
 
-        $parentKey = $this->getParentName();
-        $detailKey = $this->getDetailName();
-        $options = $this->crud->getDetailOptions($detailKey);
+        $options = $this->crud->getDetailOptions($this->getDetailName());
+        $detailLabel = $options['label'];
+        $parentLabel = $options['parent_label'];
 
         $model = $this->crud->getEntry($id);
 
         $this->crud->addCrumb(['name' => $this->crud->entity_name_plural, 'link' => $this->crud->getRoute()]);
-        $this->crud->setRoute($this->crud->getRoute()."/".$model->getKey().'/'. $detailKey);
-        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']},
-            $detailKey.' '.$parentKey.' '.$model->{$options['parentTitleKey']});
+        $this->crud->setRoute($this->crud->getRoute()."/".$model->getKey().'/'. $detailLabel);
+        $this->crud->setEntityNameStrings( $detailLabel.' '.$parentLabel.' '.$model->{$options['parentTitleKey']},
+            $detailLabel.' '.$parentLabel.' '.$model->{$options['parentTitleKey']});
 
         // fallback to global request instance
         if (is_null($request)) {
@@ -203,7 +203,7 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
         $model = $this->crud->getEntry($id);
         $relation = $options['relation'];
 
-        $fields = collect($this->crud->getDetailCreateFields($detailKey));
+        $fields = collect($this->crud->getDetailCreateFields($this->getDetailName()));
         $hasSelect2 = false;
 
         foreach ($fields as $f){
@@ -242,27 +242,28 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
     {
         $this->crud->hasAccessOrFail('update');
 
-        $parentKey = $this->getParentName();
-        $detailKey = $this->getDetailName();
-        $options = $this->crud->getDetailOptions($detailKey);
+        $options = $this->crud->getDetailOptions($this->getDetailName());
+        $detailLabel = $options['label'];
+        $parentLabel = $options['parent_label'];
         $relation = $options['relation'];
 
         $parentModel = $this->crud->getEntry($parent_id);
         $detailModel = $parentModel->$relation()->where($options['detail_key'], $detail_Id)->first();
 
         $this->crud->addCrumb(['name' => $this->crud->entity_name_plural, 'link' => $this->crud->getRoute()]);
-        $this->crud->setRoute($this->crud->getRoute()."/".$parentModel->getKey().'/'. $detailKey);
-        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$parentModel->{$options['parentTitleKey']},
-            $detailKey.' '.$parentKey.' '.$parentModel->{$options['parentTitleKey']});
+        $this->crud->setRoute($this->crud->getRoute()."/".$parentModel->getKey().'/'. $detailLabel);
+        $this->crud->setEntityNameStrings( $detailLabel.' '.$parentLabel.' '.$parentModel->{$options['parentTitleKey']},
+            $detailLabel.' '.$parentLabel.' '.$parentModel->{$options['parentTitleKey']});
 
         $this->data['entry'] = $detailModel;
         $this->data['crud'] = $this->crud;
 
-        $this->data['title'] = $detailKey.' '.$parentKey.' '.$parentModel->{$options['parentTitleKey']};
+        $this->data['title'] = $detailLabel.' '.$parentLabel.' '.$parentModel->{$options['parentTitleKey']};
         $this->data['id'] = $detailModel->id;
 
         $fields = [];
-        foreach ($this->crud->getDetailUpdateFields($detailKey) as $f){
+
+        foreach ($this->crud->getDetailUpdateFields($this->getDetailName()) as $f){
             if($f['from'] == 'pivot')
                 $f['default'] = $detailModel->pivot->{$f['name']};
             else if($f['from'] == 'detail')
@@ -282,17 +283,17 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
     {
         $this->crud->hasAccessOrFail('update');
 
-        $parentKey = $this->getParentName();
-        $detailKey = $this->getDetailName();
-        $options = $this->crud->getDetailOptions($detailKey);
+        $options = $this->crud->getDetailOptions($this->getDetailName());
+        $detailLabel = $options['label'];
+        $parentLabel = $options['parent_label'];
         $relation = $options['relation'];
 
         $parentModel = $this->crud->getEntry($parent_id);
 
         $this->crud->addCrumb(['name' => $this->crud->entity_name_plural, 'link' => $this->crud->getRoute()]);
-        $this->crud->setRoute($this->crud->getRoute()."/".$parentModel->getKey().'/'. $detailKey);
-        $this->crud->setEntityNameStrings( $detailKey.' '.$parentKey.' '.$parentModel->{$options['parentTitleKey']},
-            $detailKey.' '.$parentKey.' '.$parentModel->{$options['parentTitleKey']});
+        $this->crud->setRoute($this->crud->getRoute()."/".$parentModel->getKey().'/'. $detailLabel);
+        $this->crud->setEntityNameStrings( $detailLabel.' '.$parentLabel.' '.$parentModel->{$options['parentTitleKey']},
+            $detailLabel.' '.$parentLabel.' '.$parentModel->{$options['parentTitleKey']});
 
         // fallback to global request instance
         if (is_null($request)) {

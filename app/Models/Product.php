@@ -47,4 +47,16 @@ class Product extends Model
             ->withPivot('price')
             ->withTimestamps();
     }
+
+    public function purchasingDemands()
+    {
+        return $this->belongsToMany('App\Models\PurchaseDemand')
+            ->withPivot('quantity');
+    }
+
+    public function purchaseOrders()
+    {
+        return $this->belongsToMany('App\Models\PurchaseOrder')
+            ->withPivot('quantity', 'price', 'status');
+    }
 }

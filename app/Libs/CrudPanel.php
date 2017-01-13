@@ -14,6 +14,7 @@ class CrudPanel extends \Backpack\CRUD\CrudPanel
     public $crumb;
     public $parentTitleKey = 'name';
     public $detailTitleKey;
+    public $redirectEdit = true;
     private $detailColumn;
     private $detailCreateField;
     private $detailUpdateField;

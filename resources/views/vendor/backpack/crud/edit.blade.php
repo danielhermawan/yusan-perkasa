@@ -19,12 +19,14 @@
 		@if ($crud->hasAccess('list'))
 			<a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('backpack::crud.back_to_all') }} <span class="text-lowercase">{{ $crud->entity_name_plural }}</span></a><br><br>
 		@endif
-
-		  {!! Form::open(array('url' => $crud->route.'/'.$entry->getKey(), 'method' => 'put', 'files'=>$crud->hasUploadFields('update', $entry->getKey()))) !!}
-		  <div class="box">
+		<form method="POST" action={{url($crud->route.'/'.$entry->getKey())}} accept-charset="UTF-8">
+			{{ method_field('PUT') }}
+			{{ csrf_field() }}
+			<div class="box">
 		    <div class="box-header with-border">
 		      <h3 class="box-title">{{ trans('backpack::crud.edit').' '.$title }}</h3>
 		    </div>
+
 		    <div class="box-body row">
 		      <!-- load the view from the application if it exists, otherwise load the one in the package -->
 		      @if(view()->exists('vendor.backpack.crud.form_content'))

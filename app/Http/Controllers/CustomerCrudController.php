@@ -13,16 +13,11 @@ use App\Http\Requests\CustomerCreateDetailRequest;
 use App\Http\Requests\CustomerRequest;
 use App\Http\Requests\CustomerUpdateDetailRequest;
 use App\Http\Requests\CustomerUpdateRequest;
-use App\Models\Product;
 
 class CustomerCrudController extends CrudController
 {
     public function setup()
     {
-        $productsOptions = [];
-        foreach (Product::all() as $p){
-            $productsOptions[$p->id] = $p->name;
-        }
         $this->crud->setModel("App\Models\Customer");
         $this->crud->setRoute("customer");
         $this->crud->setEntityNameStrings('customer', 'customers');
@@ -108,15 +103,13 @@ class CustomerCrudController extends CrudController
         ]);
         $this->crud->setDetailCreateFields('product', [
             [
-                'label' => "Barang",
-                'type' => 'select_from_array',
+                'label' => "Product",
+                'type' => 'select_from_database',
                 'name' => 'product', // the method that defines the relationship in your Model
-                'options' => $productsOptions,
+                'model' => 'App\Models\Product',
                 'allows_null' => false,
-                /*'entity' => 'products', // the method that defines the relationship in your Model
-                'attribute' => 'name', // foreign key attribute that is shown to user
-                'model' => "App\Models\Product", // foreign key model
-                'pivot' => true, // on create&update, do you need to add/delete pivot table entries?*/
+                'value' => 'id',
+                'display' => 'name'
             ],
             [   // Number
                 'name' => 'price',
@@ -135,6 +128,8 @@ class CustomerCrudController extends CrudController
             ]
         ]);
         $this->crud->setDetailOptions('product', [
+            'label' => 'product',
+            'parent_label' => 'customer',
             'parentTitleKey' => 'name',
             'relation' => 'products',
             'detail_field' => 'product',

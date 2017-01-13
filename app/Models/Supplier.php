@@ -19,4 +19,9 @@ class Supplier extends Model
             ->withPivot('price')
             ->withTimestamps();
     }
+
+    public function purchaseOrders()
+    {
+        return $this->hasMany('App\Models\PurchaseOrder');
+    }
 }
