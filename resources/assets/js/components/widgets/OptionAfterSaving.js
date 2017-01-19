@@ -4,8 +4,7 @@ import {RadioGroup} from "formsy-react-components";
 function OptionAfterSaving({route, createRoute}) {
     const options = [
         {value: route, label: 'go to the table view'},
-        {value: createRoute, label: 'let me add another item'},
-        {value: 'current_item_edit', label: 'edit the new item'}
+        {value: createRoute, label: 'let me add another item'}
     ];
     return (
         <RadioGroup

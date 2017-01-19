@@ -6,15 +6,13 @@ import React from "react";
 function SubmitButton({isSubmit, canSubmit, urlBack}){
     return (
         <div>
-            {!isSubmit &&
-                <div>
-                    <button type="submit" disabled={!canSubmit}
-                            className="btn btn-success ladda-button" style={{marginRight: "10px"}}>
-                        <span className="ladda-label"><i className="fa fa-save"/> Add</span>
-                    </button>
-                    <a href={urlBack} className="btn btn-default ladda-button"><span className="ladda-label">Cancel</span></a>
-                </div>
-            }
+            <div>
+                <button type="submit" disabled={!canSubmit || isSubmit}
+                        className="btn btn-success ladda-button" style={{marginRight: "10px"}}>
+                    <span className="ladda-label"><i className="fa fa-save"/> Add</span>
+                </button>
+                <a href={urlBack} className="btn btn-default ladda-button"><span className="ladda-label">Cancel</span></a>
+            </div>
         </div>
     );
 }

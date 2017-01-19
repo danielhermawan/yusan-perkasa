@@ -12,7 +12,7 @@ use App\Http\Requests\ProductRequest as UpdateRequest;
 use App\Http\Requests\ProductUpdateDetailCustomerRequest;
 use App\Http\Requests\ProductUpdateDetailRequest;
 use App\Models\Product;
-use App\Models\Supplier;
+use Illuminate\Support\Facades\DB;
 
 class ProductCrudController extends CrudController  {
 
@@ -231,9 +231,18 @@ class ProductCrudController extends CrudController  {
         return Product::all();
     }
 
-    public function getSupplierProducts(Supplier $supplier)
+    public function getSupplierProducts($idSupplier, $idDemand)
     {
-        return $supplier->products()->get();
+        return DB::table('product_supplier')
+            ->join('products', 'products.id', '=', 'product_supplier.product_id')
+            ->where("supplier_id", $idSupplier)
+            ->whereExists(function ($query) use($idDemand){
+                $query->select(DB::raw(1))
+                    ->from('product_purchase_demand')
+                    ->where('purchase_demand_id', $idDemand)
+                    ->whereRaw('product_purchase_demand.product_id = product_supplier.product_id');
+            })
+            ->get();
     }
 
 	public function store(StoreRequest $request)

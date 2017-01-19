@@ -42,4 +42,9 @@ class PurchaseOrder extends Model
     {
         return $this->supplier->name;
     }
+
+    public function productReceipts()
+    {
+        return $this->hasMany('App\Models\ProductReceipt');
+    }
 }

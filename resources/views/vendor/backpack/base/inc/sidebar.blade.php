@@ -56,6 +56,9 @@
                 <ul class="treeview-menu">
                     <li><a href="{{ url('/permintaan-pembelian') }}"><i class="fa fa-circle-o"></i> <span>Permintaan Pembelian</span></a></li>
                     <li><a href="{{ url('/purchase-order') }}"><i class="fa fa-circle-o"></i> <span>Purchase Order</span></a></li>
+                    <li><a href="{{ url('/penerimaan-barang') }}"><i class="fa fa-circle-o"></i> <span>Penerimaan Barang</span></a></li>
+                    <li><a href="{{ url('/retur-pembelian') }}"><i class="fa fa-circle-o"></i> <span>Retur Pembelian</span></a></li>
+                    <li><a href="{{ url('/pembayaran-pembelian') }}"><i class="fa fa-circle-o"></i> <span>Pembayaran Pembelian</span></a></li>
                 </ul>
             </li>
         </ul>

@@ -85,6 +85,8 @@ return [
     'url'                  => 'The :attribute format is invalid.',
 
     'check_price' => 'The :attribute must be price',
+    'add_po_product' => 'Add Product huh?',
+    'add_demand_product' => 'Add Product huh?',
 
     /*
     |--------------------------------------------------------------------------

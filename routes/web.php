@@ -36,7 +36,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::delete('/customer/{customer}/product/{id}', 'CustomerCrudController@destroyDetail');
 
     CRUD::resource('product', 'ProductCrudController');
-    Route::get('/get-product-supplier/{supplier}', 'ProductCrudController@getSupplierProducts');
+    Route::get('/get-product-supplier/{supplier}/{id_demand}', 'ProductCrudController@getSupplierProducts');
     Route::get('/product/{product}/supplier', 'ProductCrudController@listDetail');
     Route::get('/product/{product}/supplier/create', 'ProductCrudController@createDetail');
     Route::post('/product/{product}/supplier', 'ProductCrudController@storeDetail');
@@ -61,7 +61,25 @@ Route::group(['middleware' => 'auth'], function(){
     Route::put('/permintaan-pembelian/{pembelian}/product/{id}', 'PurchaseDemandCrudController@updateDetail');
 
     CRUD::resource('purchase-order', 'PurchaseOrderCrudController');
-    Route::get('/get-purchase-order', 'PurchaseDemandCrudController@getPurchaseDemand');
+    Route::get('/purchase-order/{pembelian}/product', 'PurchaseOrderCrudController@listDetail');
+    Route::get('/purchase-order/{pembelian}/product/create', 'PurchaseOrderCrudController@createDetail');
+    Route::post('/purchase-order/{pembelian}/product', 'PurchaseOrderCrudController@storeDetail');
+    Route::delete('/purchase-order/{pembelian}/product/{id}', 'PurchaseOrderCrudController@destroyDetail');
+    Route::get('/purchase-order/{pembelian}/product/{product}/edit', 'PurchaseOrderCrudController@editDetail');
+    Route::put('/purchase-order/{pembelian}/product/{id}', 'PurchaseOrderCrudController@updateDetail');
+
+    Route::get('/get-purchase-demand', 'PurchaseOrderCrudController@getPurchaseDemand');
+    Route::get('/get-product-po/{id}', 'PurchaseOrderCrudController@getProductPo');
+    Route::get('/get-product-po-retur/{id}', 'PurchaseOrderCrudController@getProductPoForRetur');
+    Route::get('/get-purchase-order', 'PurchaseOrderCrudController@getPo');
+
+    CRUD::resource('penerimaan-barang', 'ProductReceiptCrudController');
+    Route::get('/penerimaan-barang/{productReceipt}/product', 'ProductReceiptCrudController@listDetail');
+
+    CRUD::resource('retur-pembelian', 'PurchaseReturnCrudController');
+    Route::get('/retur-pembelian/{productReceipt}/product', 'PurchaseReturnCrudController@listDetail');
+
+    CRUD::resource('pembayaran-pembelian', 'PurchasePaymentCrudController');
 
     CRUD::resource('role', 'RoleCrudController');
     CRUD::resource('employee', 'EmployeeCrudController');
@@ -72,7 +90,7 @@ Route::group(['middleware' => 'auth'], function(){
 });
 
 //todo: create po menu from p.demand
-//todo: cannot edit demand when po created
+//todo: cannot edit or delete demand and po(and their details) when penerimaan, pembayaran created
 //todo: validation give warning permitaan pembelian maximal quantity
 //todo: notification when due date
 //todo: old value in add product in puchase demand
@@ -81,4 +99,7 @@ Route::group(['middleware' => 'auth'], function(){
 //todo:route base role
 //todo: print
 //todo:add more filter
+//todo: create po from purchase demand
 //todo:format rupiah dan date
+//todo: link in column each transaction that corellate
+//todo: after all po done status po done

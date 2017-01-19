@@ -39,4 +39,9 @@ class Employee extends Authenticatable
     {
         return $this->hasMany('App\Models\PurchaseOrder');
     }
+
+    public function productReceipts()
+    {
+        return $this->hasMany('App\Models\ProductReceipt');
+    }
 }

@@ -44,7 +44,10 @@ class CrudController extends \Backpack\CRUD\app\Http\Controllers\CrudController
     {
         $uri = Request::path();
         if($position !== -1) {
-            return explode('/',$uri)[$position];
+            if($position <= (count(explode('/',$uri))-1))
+                return explode('/',$uri)[$position];
+            else
+                return "";
         }
         else {
             return $uri;

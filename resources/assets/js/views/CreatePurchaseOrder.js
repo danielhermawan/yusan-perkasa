@@ -9,7 +9,7 @@ import SubmitButton from "../components/widgets/SubmitButton";
 import OptionAfterSaving from "../components/widgets/OptionAfterSaving";
 import withFormHandler from "../components/hoc/withFormHandler";
 import {Input, Select} from "formsy-react-components";
-import {getData} from "../utils/DataHelper";
+import {getData, postData} from "../utils/DataHelper";
 import {dataToSelect, getParameterByName} from "../utils/helpers";
 
 class CreatePurchase extends React.Component{
@@ -21,17 +21,21 @@ class CreatePurchase extends React.Component{
             suppliers: [],
             supplier_id: "",
             products: [],
-            indexProduct: -1
+            indexProduct: -1,
+            errors: [],
+            isSubmit: false
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
         this.onSupplierChange = this.onSupplierChange.bind(this);
         this.removeProduct = this.removeProduct.bind(this);
         this.addProduct = this.addProduct.bind(this);
+        this.getProduct = this.getProduct.bind(this);
+        this.onDemandChange = this.onDemandChange.bind(this);
     }
 
     componentDidMount() {
-        getData('get-purchase-order')
+        getData('get-purchase-demand')
             .then(datas => {
                 this.setState({
                     purchaseDemands: datas
@@ -48,6 +52,22 @@ class CreatePurchase extends React.Component{
         });
     }
 
+    getProduct(){
+        if(this.state.supplier_id && this.state.purchase_demand_id){
+            this.setState({
+                indexProduct: 0,
+                isSubmit: true
+            });
+            getData("get-product-supplier/"+this.state.supplier_id+'/'+this.state.purchase_demand_id)
+                .then(datas => {
+                    this.setState({
+                        indexProduct: 1,
+                        products: datas,
+                        isSubmit: false
+                    });
+                });
+        }
+    }
 
     onInputChange(name, value){
         let state = {};
@@ -67,25 +87,67 @@ class CreatePurchase extends React.Component{
         });
     }
 
+    onDemandChange(name, value){
+        if(value !== "")
+            this.setState({
+                purchase_demand_id: value
+            }, state => {
+                this.getProduct();
+            });
+    }
+
     onSupplierChange(name, value){
-        this.setState({
-            indexProduct: 0
-        });
-        getData("get-product-supplier/"+value)
-            .then(datas => {
-                this.setState({
-                    indexProduct: 1,
-                    products: datas
-                });
+        if(value !== "")
+            this.setState({
+                supplier_id: value
+            }, state => {
+                this.getProduct();
             });
     }
 
     onSubmit(data){
-        console.log(data);
+        this.setState({
+            isSubmit: true
+        });
+        data.product = [];
+        data.quantity = [];
+        _.forOwn(data, (value, key) => {
+            if(key.startsWith("product-")){
+                data.product.push(value);
+                delete data[key];
+            }
+            else if(key.startsWith("quantity-")){
+                data.quantity.push(value);
+                delete data[key];
+            }
+        });
+        postData('purchase-order', data)
+            .then(respond => {
+                if(respond.status === 200){
+                    this.setState({
+                        isSubmit: false
+                    });
+                    window.location.pathname = respond.data+"";
+                }
+            })
+            .catch(error => {
+                let objErr = error.response.data;
+                let errors = [];
+                _.forOwn(objErr, (value, key) => {
+                    value.forEach(v => {
+                        if(!_.some(errors, topic => topic != v))
+                        errors.push(v);
+                    })
+                });
+                this.setState({
+                    errors: errors,
+                    isSubmit: false
+                });
+            });
     }
 
     render(){
-        const { isSubmit, enabledSubmit, disabledSubmit, canSubmit} = this.props;
+        const {  enabledSubmit, disabledSubmit, canSubmit} = this.props;
         const selectPurchaseDemand = dataToSelect(this.state.purchaseDemands, "id", "id",
             this.state.purchaseDemands.length !== 0 ? "Select Purchase Demand ID" : "Loading Purchase Demand...");
         const selectSuppliers = dataToSelect(this.state.suppliers, "id", "name",
@@ -93,9 +155,10 @@ class CreatePurchase extends React.Component{
         let selectProducts = this.state.products.map(data => {
             return {
                 value: data.id,
-                label: data.name + ' harga: ' + data.pivot.price
+                label: data.name + ' harga: ' + data.price
             }
         });
+        const errors = this.state.errors.map((e, i) => <li key={i}>{e}</li> );
         selectProducts .unshift(
             {
                 value: '',
@@ -109,7 +172,7 @@ class CreatePurchase extends React.Component{
                 <div className="row" key={i}>
                     <div className="col-md-6">
                         <Select
-                            name="product_id[]"
+                            name={'product-'+i}
                             label={"Product"}
                             required
                             options={ selectProducts }
@@ -117,7 +180,7 @@ class CreatePurchase extends React.Component{
                     </div>
                     <div className="col-md-3">
                         <Input
-                            name="quantity[]"
+                            name={'quantity-'+i}
                             value={1}
                             label={"Qty"}
                             type="number"
@@ -141,11 +204,21 @@ class CreatePurchase extends React.Component{
         });
         return (
             <BoxWrapper title="Add a new Purchase Order">
+                {this.state.errors.length != 0 &&
+                    <div className="col-md-12">
+                        <div className="callout callout-danger">
+                            <h4>Please fix the following errors:</h4>
+                            <ul>
+                                { errors }
+                            </ul>
+                        </div>
+                    </div>
+                }
                 <Formsy.Form className="form-vertical"
                     onValidSubmit={ this.onSubmit } onValid={ enabledSubmit } onInvalid={ disabledSubmit }>
                     <div className="box-body">
                         <Select
-                            onChange={this.onInputChange}
+                            onChange={this.onDemandChange}
                             value={this.state.purchase_demand_id}
                             disabled={this.state.purchaseDemands.length === 0}
                             name="purchase_demand_id"
@@ -173,7 +246,7 @@ class CreatePurchase extends React.Component{
                             validations={{
                                 matchRegexp: /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/
                             }}
-                            validationError="Due Date must be correct date in dd/mm/yyyy format"
+                            validationError="Due Date must be correct date in dd-mm-yyyy format"
                         />
                         <Select
                             onChange={this.onSupplierChange}
@@ -195,23 +268,26 @@ class CreatePurchase extends React.Component{
                                 </div>
                             </div>
                         }
-                        {
-                            this.state.indexProduct != 0?
+                        <fieldset>
+                            {
+                                this.state.indexProduct != 0?
                                 this.state.indexProduct != -1 && this.productOptions :
-                                (
-                                    <div className="row" style={{marginBottom: "7px"}}>
-                                        <div className="col-sm-offset-3 col-sm-3">
-                                            <p>Loading Product...</p>
+                                    (
+                                        <div className="row" style={{marginBottom: "7px"}}>
+                                            <div className="col-sm-offset-3 col-sm-3">
+                                                <p>Loading Product...</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                )
-                        }
+                                    )
+                            }
+                        </fieldset>
+
                     </div>
                     <div className="box-footer">
                         <OptionAfterSaving
                             route="purchase-order"
                             createRoute="purchase-order/create"/>
-                        <SubmitButton isSubmit={isSubmit} canSubmit={canSubmit} urlBack="purchase-order"/>
+                        <SubmitButton isSubmit={this.state.isSubmit} canSubmit={canSubmit} urlBack="purchase-order"/>
                     </div>
 
                 </Formsy.Form>

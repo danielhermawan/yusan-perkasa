@@ -12,3 +12,8 @@ export function getData(url){
             console.log(error);
         });
 }
+
+export function postData(url, data){
+    return axios.post(url, data);
+
+}
