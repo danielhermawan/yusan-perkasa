@@ -15,6 +15,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\PurchaseOrderModified' => [
             'App\Listeners\PurchaseOrderChecked',
         ],
+        'App\Events\SalesTransaction' => [
+            'App\Listeners\SalesOrderChecked',
+        ],
     ];
 
     /**

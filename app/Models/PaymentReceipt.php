@@ -9,16 +9,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PaymentReceipt extends Model
 {
     use SoftDeletes, CrudTrait;
-    protected $fillable = ['employee_id', 'purchase_order_id', 'receiving_date'];
+    protected $fillable = ['employee_id', 'sales_order_id', 'total_payment'];
 
     public function employee()
     {
         return $this->belongsTo('App\Models\Employee');
     }
 
-    public function purchaseOrder()
+    public function salesOrder()
     {
-        return $this->belongsTo('App\Models\PurchaseOrder');
+        return $this->belongsTo('App\Models\SalesOrder');
     }
 
     public function products()
@@ -27,9 +27,9 @@ class PaymentReceipt extends Model
             ->withPivot('quantity');
     }
 
-    public function getPoId()
+    public function getSoId()
     {
-        return $this->purchaseOrder->id;
+        return $this->salesOrder->id;
     }
 
     public function getEmployeeName()

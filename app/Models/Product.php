@@ -71,4 +71,10 @@ class Product extends Model
         return $this->belongsToMany('App\Models\PurchaseReturn')
             ->withPivot('quantity', 'status');
     }
+
+    public function salesOrders()
+    {
+        return $this->belongsToMany('App\Models\SalesOrder')
+            ->withPivot('quantity', 'price', 'status');
+    }
 }

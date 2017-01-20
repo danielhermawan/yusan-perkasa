@@ -40,6 +40,11 @@ class Employee extends Authenticatable
         return $this->hasMany('App\Models\PurchaseOrder');
     }
 
+    public function salesOrders()
+    {
+        return $this->hasMany('App\Models\SalesOrder');
+    }
+
     public function productReceipts()
     {
         return $this->hasMany('App\Models\ProductReceipt');

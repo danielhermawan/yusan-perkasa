@@ -13,6 +13,7 @@ use App\Http\Requests\CustomerCreateDetailRequest;
 use App\Http\Requests\CustomerRequest;
 use App\Http\Requests\CustomerUpdateDetailRequest;
 use App\Http\Requests\CustomerUpdateRequest;
+use App\Models\Customer;
 
 class CustomerCrudController extends CrudController
 {
@@ -136,6 +137,11 @@ class CustomerCrudController extends CrudController
             'detail_key' => 'product_id',
             'detail_key_title' => 'name'
         ]);
+    }
+
+    public function getCustomers()
+    {
+        return Customer::all();
     }
 
     public function store(CustomerRequest $request)

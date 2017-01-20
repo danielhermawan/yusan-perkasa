@@ -9,8 +9,6 @@
             $status = "Semua barang di cancel";break;
         case '2':
             $status = "Semua barang sudah di terima";break;
-        case '5':
-            $status = "Barang ada yang rusak dan diterima sebagian";break;
     }
     if($code == '3'){
         $quantityReceipt = \DB::table('product_receipts')

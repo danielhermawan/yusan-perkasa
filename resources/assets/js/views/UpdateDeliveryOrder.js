@@ -1,5 +1,5 @@
 /**
- * Created by Daniel on 1/18/2017.
+ * Created by Daniel on 1/20/2017.
  */
 import React from "react";
 import Formsy from "formsy-react";
@@ -9,67 +9,69 @@ import OptionAfterSaving from "../components/widgets/OptionAfterSaving";
 import withFormHandler from "../components/hoc/withFormHandler";
 import {Input} from "formsy-react-components";
 import {getData, postData} from "../utils/DataHelper";
-import {dataToSelect, getParameterByName} from "../utils/helpers";
-import AddProduct from "../components/widgets/AddProductRetur";
+import AddProduct from "../components/widgets/AddProducts";
 import ErrorView from "../components/widgets/ErrorView";
-import InputPurchaseOrder from "../components/widgets/InputPurchaseOrder";
 import _ from "lodash";
+import InputSalesOrder from "../components/widgets/InputSalesOrder";
 
-class CreatePurchaseReturn extends React.Component{
-    constructor(props){
+class UpdateDeliveryOrder extends React.Component{
+    constructor(props) {
         super(props);
         this.state = {
-            pos: [],
-            po_id: "",
             products: [],
-            loadingProductState: -1,
+            loadingProductState: 0,
             errors: [],
-            isSubmit: false
+            isSubmit: true
         };
         this.onSubmit = this.onSubmit.bind(this);
-        this.onPoChange = this.onPoChange.bind(this);
     }
 
     componentDidMount() {
-        getData('get-purchase-order')
+        let doId = window.location.pathname.split('/')[2];
+        getData("get-product-do/"+doId)
             .then(datas => {
                 this.setState({
-                    pos: datas
+                    loadingProductState: 1,
+                    products: datas,
+                    isSubmit: false
                 });
+            })
+            .catch(errors => {
+                console.log(errors);
             });
-        this.setState({
-            po_id: getParameterByName("purchase-order")
-        });
     }
 
     render(){
         const {  enabledSubmit, disabledSubmit, canSubmit} = this.props;
-        const selectPo = dataToSelect(this.state.pos, "id", "id",
-            this.state.pos.length !== 0 ? "Select Purchase Order ID" : "Loading Purchase Order...");
+
         return (
-            <BoxWrapper title="Add a new purchase return ">
+            <BoxWrapper title="Add a new delivery order">
 
                 <ErrorView errors={this.state.errors} />
 
                 <Formsy.Form className="form-vertical"
                              onValidSubmit={ this.onSubmit } onValid={ enabledSubmit } onInvalid={ disabledSubmit }>
                     <div className="box-body">
-                        <InputPurchaseOrder onChange={this.onPoChange} id={this.state.po_id} pos={this.state.pos} />
+                        <InputSalesOrder onChange={this.onSoChange} id={this.state.so_id} sos={this.state.sos} />
                         <Input
-                            name="description"
-                            label="Deskripsi"
-                            type="text"
-                            placeholder="Deskripsi"
+                            name="sending_date"
+                            label="Tanggal Pengiriman"
+                            type="date"
+                            placeholder="Tanggal Pengiriman"
                             required
+                            validations={{
+                                matchRegexp: /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/
+                            }}
+                            validationError="Tanggal Pengiriman must be correct date in dd-mm-yyyy format"
                         />
                         <AddProduct products={this.state.products} loadingState={this.state.loadingProductState}/>
                     </div>
 
                     <div className="box-footer">
                         <OptionAfterSaving
-                            route="retur-penjualan"
-                            createRoute="retur-penjualan/create"/>
-                        <SubmitButton isSubmit={this.state.isSubmit} canSubmit={canSubmit} urlBack="retur-penjualan"/>
+                            route="delivery-order"
+                            createRoute="delivery-order/create"/>
+                        <SubmitButton isSubmit={this.state.isSubmit} canSubmit={canSubmit} urlBack="delivery-order"/>
                     </div>
 
                 </Formsy.Form>
@@ -77,39 +79,13 @@ class CreatePurchaseReturn extends React.Component{
         )
     }
 
-    onPoChange(name, value){
-        if(value !== ""){
-            this.setState({
-                loadingProductState: 0,
-                po_id: value,
-                isSubmit: true
-            });
-            getData("get-product-po-retur/"+value)
-                .then(datas => {
-                    this.setState({
-                        loadingProductState: 1,
-                        products: datas,
-                        isSubmit: false
-                    });
-                })
-                .catch(errors => {
-                    console.log(errors);
-                });
-        }
-        else
-            this.setState({
-                loadingProductState: -1,
-                po_id: value
-            });
-    }
-
     onSubmit(data){
         this.setState({
             isSubmit: true
         });
+        delete data.productName;
         data.product = [];
         data.quantity = [];
-        data.status = [];
         _.forOwn(data, (value, key) => {
             if(key.startsWith("product-")){
                 data.product.push(value);
@@ -119,12 +95,8 @@ class CreatePurchaseReturn extends React.Component{
                 data.quantity.push(value);
                 delete data[key];
             }
-            else if(key.startsWith("status-")){
-                data.status.push(value);
-                delete data[key];
-            }
         });
-        postData('retur-pembelian', data)
+        postData('delivery-order', data)
             .then(respond => {
                 if(respond.status === 200){
                     this.setState({
@@ -150,4 +122,4 @@ class CreatePurchaseReturn extends React.Component{
     }
 }
 
-export default withFormHandler(CreatePurchaseReturn);
+export default withFormHandler(UpdateDeliveryOrder);

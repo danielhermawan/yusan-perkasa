@@ -34,9 +34,11 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/customer/{customer}/product/{product}/edit', 'CustomerCrudController@editDetail');
     Route::put('/customer/{customer}/product/{id}', 'CustomerCrudController@updateDetail');
     Route::delete('/customer/{customer}/product/{id}', 'CustomerCrudController@destroyDetail');
+    Route::get('/get-customer', 'CustomerCrudController@getCustomers');
 
     CRUD::resource('product', 'ProductCrudController');
     Route::get('/get-product-supplier/{supplier}/{id_demand}', 'ProductCrudController@getSupplierProducts');
+    Route::get('/get-product-customer/{customer}', 'ProductCrudController@getCustomerProducts');
     Route::get('/product/{product}/supplier', 'ProductCrudController@listDetail');
     Route::get('/product/{product}/supplier/create', 'ProductCrudController@createDetail');
     Route::post('/product/{product}/supplier', 'ProductCrudController@storeDetail');
@@ -73,6 +75,11 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/get-product-po-retur/{id}', 'PurchaseOrderCrudController@getProductPoForRetur');
     Route::get('/get-purchase-order', 'PurchaseOrderCrudController@getPo');
 
+    Route::get('/get-product-so/{id}', 'SalesOrderCrudController@getProductSo');
+    Route::get('/get-delivery-order', 'DeliveryOrderCrudController@getDo');
+    Route::get('/get-product-so-retur/{id}', 'SalesOrderCrudController@getProductSoForRetur');
+    Route::get('/get-sales-order', 'SalesOrderCrudController@getSo');
+
     CRUD::resource('penerimaan-barang', 'ProductReceiptCrudController');
     Route::get('/penerimaan-barang/{productReceipt}/product', 'ProductReceiptCrudController@listDetail');
 
@@ -80,6 +87,18 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('/retur-pembelian/{productReceipt}/product', 'PurchaseReturnCrudController@listDetail');
 
     CRUD::resource('pembayaran-pembelian', 'PurchasePaymentCrudController');
+
+    CRUD::resource('sales-order', 'SalesOrderCrudController');
+    Route::get('/sales-order/{salesorder}/product', 'SalesOrderCrudController@listDetail');
+
+    CRUD::resource('delivery-order', 'DeliveryOrderCrudController');
+    Route::get('/delivery-order/{deliveryorder}/product', 'DeliveryOrderCrudController@listDetail');
+    Route::get('/get-product-do/{id}', 'DeliveryOrderCrudController@getDo');
+
+    CRUD::resource('retur-penjualan', 'SalesReturnCrudController');
+    Route::get('/retur-penjualan/{rp}/product', 'SalesReturnCrudController@listDetail');
+
+    CRUD::resource('penerimaan-pembayaran', 'PaymentReceiptCrudController');
 
     CRUD::resource('role', 'RoleCrudController');
     CRUD::resource('employee', 'EmployeeCrudController');

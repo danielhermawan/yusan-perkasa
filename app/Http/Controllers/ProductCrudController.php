@@ -11,6 +11,7 @@ use App\Http\Requests\ProductRequest as StoreRequest;
 use App\Http\Requests\ProductRequest as UpdateRequest;
 use App\Http\Requests\ProductUpdateDetailCustomerRequest;
 use App\Http\Requests\ProductUpdateDetailRequest;
+use App\Models\Customer;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
@@ -243,6 +244,11 @@ class ProductCrudController extends CrudController  {
                     ->whereRaw('product_purchase_demand.product_id = product_supplier.product_id');
             })
             ->get();
+    }
+
+    public function getCustomerProducts(Customer $customer)
+    {
+        return $customer->products()->get();
     }
 
 	public function store(StoreRequest $request)

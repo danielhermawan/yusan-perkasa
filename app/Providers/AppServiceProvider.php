@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\DeliveryOrder;
+use App\Models\Product;
 use App\Models\PurchaseDemand;
 use App\Models\PurchaseOrder;
+use App\Models\SalesOrder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
@@ -17,6 +20,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Validator::extend('check_stock', function($attribute, $value, $parameters, $validator){
+            $valid = true;
+            $productId = unserialize($parameters[0])[explode('.', $attribute)[1]];
+            $qty = $value;
+            $product = Product::find($productId);
+            $productQty = $product->quantity;
+            if($productQty - $qty < 0)
+                $valid = false;
+            return $valid;
+        });
+
+        Validator::replacer('check_stock', function ($message, $attribute, $rule, $parameters) {
+            $productId = unserialize($parameters[0])[explode('.', $attribute)[1]];
+            $product = Product::find($productId);
+            $productQty = $product->quantity;
+            $message = "Quantity ".$product->name." must be less or same than ".($productQty).
+                " in accordance with product quantity";
+            return $message;
+        });
+
         Validator::extend('check_price', function ($attribute, $value, $parameters, $validator) {
             $valid = true;
             $model = new $parameters[0]();
@@ -87,6 +110,88 @@ class AppServiceProvider extends ServiceProvider
             if($newQty > $maxQuantity)
                 $valid = false;
             return $valid;
+        });
+
+        Validator::extend('add_so_product', function ($attribute, $value, $parameters, $validator) {
+            $valid = true;
+            $soId = $parameters[0];
+            $productId = unserialize($parameters[1])[explode('.', $attribute)[1]];
+            $newQty = $value;
+            $isRetur = isset($parameters[2]) ? true : false;
+            $newQty += DB::table('delivery_orders')
+                ->join('delivery_order_product', 'delivery_orders.id', '=', 'delivery_order_product.delivery_order_id')
+                ->where('sales_order_id', $soId)
+                ->where('product_id', $productId)
+                ->sum('quantity');
+            if($isRetur)
+                $newQty += DB::table('sales_returns')
+                    ->join('product_sales_return', 'sales_returns.id', '=', 'product_sales_return.sales_return_id')
+                    ->where('sales_order_id', $soId)
+                    ->where('product_id', $productId)
+                    ->where('status', '1')
+                    ->sum('quantity');
+            $maxQuantity = SalesOrder::find($soId)
+                ->products()
+                ->where('product_id', $productId)
+                ->first()
+                ->pivot->quantity;
+            if($newQty > $maxQuantity)
+                $valid = false;
+            return $valid;
+        });
+
+        Validator::replacer('add_so_product', function ($message, $attribute, $rule, $parameters) {
+            $soId = $parameters[0];
+            $productId = unserialize($parameters[1])[explode('.', $attribute)[1]];
+            $isRetur = isset($parameters[2]) ? true : false;
+            $product = SalesOrder::find($parameters[0])
+                ->products()
+                ->where('product_id', unserialize($parameters[1])[explode('.', $attribute)[1]])
+                ->first();
+            $maxQty = 0;
+            $maxQty += DB::table('delivery_orders')
+                ->join('delivery_order_product', 'delivery_orders.id', '=', 'delivery_order_product.delivery_order_id')
+                ->where('sales_order_id', $soId)
+                ->where('product_id', $productId)
+                ->sum('quantity');
+            if($isRetur)
+                $maxQty += DB::table('sales_returns')
+                    ->join('product_sales_return', 'sales_returns.id', '=', 'product_sales_return.sales_return_id')
+                    ->where('sales_order_id', $soId)
+                    ->where('product_id', $productId)
+                    ->where('status', '1')
+                    ->sum('quantity');
+            $message = "Quantity ".$product->name." must be less or same than ".($product->pivot->quantity - $maxQty).
+                " in accordance with the sales order";
+            return $message;
+        });
+
+        Validator::extend('add_sales_retur_product', function ($attribute, $value, $parameters, $validator) {
+            $valid = true;
+            $doId = $parameters[0];
+            $productId = unserialize($parameters[1])[explode('.', $attribute)[1]];
+            $newQty = $value;
+            $maxQuantity = DeliveryOrder::find($doId)
+                ->products()
+                ->where('product_id', $productId)
+                ->first()
+                ->pivot->quantity;
+            if($newQty > $maxQuantity)
+                $valid = false;
+            return $valid;
+        });
+
+        Validator::replacer('add_sales_retur_product', function ($message, $attribute, $rule, $parameters) {
+            $doId = $parameters[0];
+            $productId = unserialize($parameters[1])[explode('.', $attribute)[1]];
+            $maxQuantity = DeliveryOrder::find($doId)
+                ->products()
+                ->where('product_id', $productId)
+                ->first()
+                ->pivot->quantity;
+            $message = "Quantity ".Product::find($productId)->name." must be less or same than ".($maxQuantity).
+                " in accordance with the deliver order";
+            return $message;
         });
 
         Validator::extend('add_demand_product', function ($attribute, $value, $parameters, $validator) {

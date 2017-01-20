@@ -61,6 +61,18 @@
                     <li><a href="{{ url('/pembayaran-pembelian') }}"><i class="fa fa-circle-o"></i> <span>Pembayaran Pembelian</span></a></li>
                 </ul>
             </li>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-usd"></i> <span>Penjualan</span>
+                    <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ url('/sales-order') }}"><i class="fa fa-circle-o"></i> <span>Sales Order</span></a></li>
+                    <li><a href="{{ url('/delivery-order') }}"><i class="fa fa-circle-o"></i> <span>Delivery Order</span></a></li>
+                    <li><a href="{{ url('/retur-penjualan') }}"><i class="fa fa-circle-o"></i> <span>Retur Penjualan</span></a></li>
+                    <li><a href="{{ url('/penerimaan-pembayaran') }}"><i class="fa fa-circle-o"></i> <span>Penerimaan Pembayaran</span></a></li>
+                </ul>
+            </li>
         </ul>
       </section>
       <!-- /.sidebar -->

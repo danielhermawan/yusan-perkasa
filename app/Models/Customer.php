@@ -19,4 +19,9 @@ class Customer extends Model
             ->withPivot('price')
             ->withTimestamps();;
     }
+
+    public function salesOrders()
+    {
+        return $this->hasMany('App\Models\SalesOrder');
+    }
 }

@@ -10,7 +10,7 @@ switch ($code){
     case '2':
         $status = "Siap Dibayar";break;
     case '3':
-        $status = "Open";break;
+        $status = "Finished";break;
 }
 ?>
 <td>{{str_limit(strip_tags($status), 80, "[...]") }}</td>

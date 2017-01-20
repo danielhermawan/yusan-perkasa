@@ -74,7 +74,9 @@ class PurchaseOrderCrudController extends CrudController
             [
                 'name' => 'payment',
                 'label' => 'Payment',
-                'type' => 'payment_button'
+                'type' => 'payment_button',
+                'url'=> 'pembayaran-pembelian',
+                'order_id' => 'purchase_order_id',
             ]
         ]);
         $this->crud->addFields([

@@ -1,5 +1,5 @@
 /**
- * Created by Daniel on 1/18/2017.
+ * Created by Daniel on 1/20/2017.
  */
 import React from "react";
 import Formsy from "formsy-react";
@@ -9,52 +9,50 @@ import OptionAfterSaving from "../components/widgets/OptionAfterSaving";
 import withFormHandler from "../components/hoc/withFormHandler";
 import {Input} from "formsy-react-components";
 import {getData, postData} from "../utils/DataHelper";
-import {dataToSelect, getParameterByName} from "../utils/helpers";
+import {getParameterByName} from "../utils/helpers";
 import AddProduct from "../components/widgets/AddProductRetur";
 import ErrorView from "../components/widgets/ErrorView";
-import InputPurchaseOrder from "../components/widgets/InputPurchaseOrder";
 import _ from "lodash";
+import InputDeliveryOrder from "../components/widgets/InputDeliveryOrder";
 
-class CreatePurchaseReturn extends React.Component{
-    constructor(props){
+class CreateSalesReturn extends React.Component{
+    constructor(props) {
         super(props);
         this.state = {
-            pos: [],
-            po_id: "",
+            dos: [],
+            do_id: "",
             products: [],
             loadingProductState: -1,
             errors: [],
             isSubmit: false
         };
         this.onSubmit = this.onSubmit.bind(this);
-        this.onPoChange = this.onPoChange.bind(this);
+        this.onDoChange = this.onDoChange.bind(this);
     }
 
     componentDidMount() {
-        getData('get-purchase-order')
+        getData('get-delivery-order')
             .then(datas => {
                 this.setState({
-                    pos: datas
+                    dos: datas
                 });
             });
         this.setState({
-            po_id: getParameterByName("purchase-order")
+            so_id: getParameterByName("delivery-order")
         });
     }
 
     render(){
         const {  enabledSubmit, disabledSubmit, canSubmit} = this.props;
-        const selectPo = dataToSelect(this.state.pos, "id", "id",
-            this.state.pos.length !== 0 ? "Select Purchase Order ID" : "Loading Purchase Order...");
         return (
-            <BoxWrapper title="Add a new purchase return ">
+            <BoxWrapper title="Add a new product receipt">
 
                 <ErrorView errors={this.state.errors} />
 
                 <Formsy.Form className="form-vertical"
                              onValidSubmit={ this.onSubmit } onValid={ enabledSubmit } onInvalid={ disabledSubmit }>
                     <div className="box-body">
-                        <InputPurchaseOrder onChange={this.onPoChange} id={this.state.po_id} pos={this.state.pos} />
+                        <InputDeliveryOrder onChange={this.onDoChange} id={this.state.do_id} dos={this.state.dos} />
                         <Input
                             name="description"
                             label="Deskripsi"
@@ -77,14 +75,14 @@ class CreatePurchaseReturn extends React.Component{
         )
     }
 
-    onPoChange(name, value){
+    onDoChange(name, value){
         if(value !== ""){
             this.setState({
                 loadingProductState: 0,
-                po_id: value,
+                do_id: value,
                 isSubmit: true
             });
-            getData("get-product-po-retur/"+value)
+            getData("get-product-so-retur/"+value)
                 .then(datas => {
                     this.setState({
                         loadingProductState: 1,
@@ -99,7 +97,7 @@ class CreatePurchaseReturn extends React.Component{
         else
             this.setState({
                 loadingProductState: -1,
-                po_id: value
+                so_id: value
             });
     }
 
@@ -124,7 +122,7 @@ class CreatePurchaseReturn extends React.Component{
                 delete data[key];
             }
         });
-        postData('retur-pembelian', data)
+        postData('retur-penjualan', data)
             .then(respond => {
                 if(respond.status === 200){
                     this.setState({
@@ -150,4 +148,4 @@ class CreatePurchaseReturn extends React.Component{
     }
 }
 
-export default withFormHandler(CreatePurchaseReturn);
+export default withFormHandler(CreateSalesReturn);
