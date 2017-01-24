@@ -17,7 +17,9 @@ Route::group(['middleware' => 'guest'], function(){
 });
 
 Route::group(['middleware' => 'auth'], function(){
-    Route::get('/', 'EmployeeCrudController@index');
+    Route::get('/', 'DashboardController@purchasing');
+    Route::get('/laporan-penjualan', 'DashboardController@sales');
+    Route::get('/laporan-pembelian', 'DashboardController@purchasing');
     Route::get('/logout', 'AuthController@logout');
 
     Route::get('/supplier/{supplier}/product', 'SupplierCrudController@listDetail');

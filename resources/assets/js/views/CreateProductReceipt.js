@@ -9,7 +9,7 @@ import OptionAfterSaving from "../components/widgets/OptionAfterSaving";
 import withFormHandler from "../components/hoc/withFormHandler";
 import {Input} from "formsy-react-components";
 import {getData, postData} from "../utils/DataHelper";
-import {getParameterByName} from "../utils/helpers";
+import {dataToSelect, getParameterByName} from "../utils/helpers";
 import AddProduct from "../components/widgets/AddProducts";
 import ErrorView from "../components/widgets/ErrorView";
 import InputPurchaseOrder from "../components/widgets/InputPurchaseOrder";
@@ -44,6 +44,8 @@ class CreateProductReceipt extends React.Component{
 
     render(){
         const {  enabledSubmit, disabledSubmit, canSubmit} = this.props;
+        const selectPo = dataToSelect(this.state.pos, "id", "id",
+            this.state.pos.length !== 0 ? "Select Purchase Order ID" : "Loading Purchase Order...");
         return (
             <BoxWrapper title="Add a new product receipt">
 
@@ -71,7 +73,7 @@ class CreateProductReceipt extends React.Component{
                         <OptionAfterSaving
                             route="penerimaan-barang"
                             createRoute="penerimaan-barang/create"/>
-                        <SubmitButton isSubmit={this.state.isSubmit} canSubmit={canSubmit} urlBack="penerimaan-barang"/>
+                        <SubmitButton isSubmit={this.state.isSubmit} canSubmit={canSubmit} urlBack="purchase-order"/>
                     </div>
 
                 </Formsy.Form>

@@ -17,6 +17,17 @@
         <ul class="sidebar-menu">
           <li class="header">{{ trans('backpack::base.administration') }}</li>
 
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                    <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ url('/laporan-pembelian') }}"><i class="fa fa-circle-o"></i> <span>Laporan Pembelian</span></a></li>
+                    <li><a href="{{ url('/laporan-penjualan') }}"><i class="fa fa-circle-o"></i> <span>Laporan Penjualan</span></a></li>
+                </ul>
+            </li>
+
           <li class="treeview">
               <a href="#">
                   <i class="fa fa-users"></i> <span>People</span>

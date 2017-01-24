@@ -87,10 +87,9 @@ class AddProduct extends React.Component{
     render(){
         const {products, loadingState} = this.props;
         let selectProducts = products.map(data => {
-            let harga = data.pivot.price !== undefined ? ' harga: ' + data.pivot.price : "";
             return {
                 value: data.id,
-                label: data.name + harga
+                label: data.name + ' harga: ' + data.pivot.price
             }
         });
         selectProducts .unshift(

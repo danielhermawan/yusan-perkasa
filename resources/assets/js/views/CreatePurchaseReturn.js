@@ -47,7 +47,7 @@ class CreatePurchaseReturn extends React.Component{
         const selectPo = dataToSelect(this.state.pos, "id", "id",
             this.state.pos.length !== 0 ? "Select Purchase Order ID" : "Loading Purchase Order...");
         return (
-            <BoxWrapper title="Add a new purchase return ">
+            <BoxWrapper title="Add a new product receipt">
 
                 <ErrorView errors={this.state.errors} />
 
@@ -67,9 +67,9 @@ class CreatePurchaseReturn extends React.Component{
 
                     <div className="box-footer">
                         <OptionAfterSaving
-                            route="retur-penjualan"
-                            createRoute="retur-penjualan/create"/>
-                        <SubmitButton isSubmit={this.state.isSubmit} canSubmit={canSubmit} urlBack="retur-penjualan"/>
+                            route="retur-pembelian"
+                            createRoute="retur-pembelian/create"/>
+                        <SubmitButton isSubmit={this.state.isSubmit} canSubmit={canSubmit} urlBack="purchase-order"/>
                     </div>
 
                 </Formsy.Form>
