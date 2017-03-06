@@ -12,10 +12,10 @@ return [
     */
 
     // Project name. Shown in the breadcrumbs and a few other places.
-    'project_name' => 'Yuan Perkasa',
+    'project_name' => 'Yusen Perkasa',
 
     // Menu logos
-    'logo_lg'   => '<b>Yuan Perkasa<b>',
+    'logo_lg'   => '<b>Yusen Perkasa<b>',
     'logo_mini' => '<b>YP</b>',
 
     // Developer or company name. Shown in footer.
